@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     // Read context.md for system-level context
     const contextPath = path.join(process.cwd(), "context.md");
     const contextContent = await readFile(contextPath, "utf-8")
-      .then((c) => c.replace(/<!--.*?-->/gs, "").trim())
+      .then((c) => c.replace(/<!--[\s\S]*?-->/g, "").trim())
       .catch(() => "");
 
     // Read the prompt from the corresponding .md file — preserve it fully
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const promptContent = await readFile(mdPath, "utf-8");
 
     // Only strip HTML comments, keep everything else intact
-    const instructions = promptContent.replace(/<!--.*?-->/gs, "").trim();
+    const instructions = promptContent.replace(/<!--[\s\S]*?-->/g, "").trim();
 
     const systemPrompt = `You are a content repurposing expert working for The Gyaan Project (TGP). Follow the user's instructions precisely. Stick to the transcript — do not fabricate information, quotes, or details that are not in the transcript. Output only what is asked for.
 

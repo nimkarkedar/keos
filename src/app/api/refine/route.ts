@@ -58,7 +58,7 @@ Now the user has the following feedback/request:`,
     // Read context.md
     const contextPath = path.join(process.cwd(), "context.md");
     const contextContent = await readFile(contextPath, "utf-8")
-      .then((c) => c.replace(/<!--.*?-->/gs, "").trim())
+      .then((c) => c.replace(/<!--[\s\S]*?-->/g, "").trim())
       .catch(() => "");
 
     const systemPrompt = `You are helping refine content generated from a podcast transcript for The Gyaan Project (TGP). When the user asks for changes, apply them and return the FULL revised content (not just the changed parts). Keep the same format unless told otherwise. Be responsive to tone, style, and content feedback.
