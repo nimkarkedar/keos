@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import FileUpload from "./components/FileUpload";
 
 export default function Home() {
@@ -15,13 +16,19 @@ export default function Home() {
             className="invert"
             priority
           />
+          <Link
+            href="/about"
+            className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+          >
+            About
+          </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="flex flex-1 flex-col items-center justify-center px-6 pt-24 pb-20 text-center">
         <div className="mb-4 inline-block rounded-full border border-zinc-200 bg-zinc-50 px-4 py-1.5 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
-          Powered by AI
+          Powered by Claude
         </div>
         <h1 className="mx-auto max-w-3xl text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
           Repurpose{" "}

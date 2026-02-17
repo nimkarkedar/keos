@@ -59,10 +59,10 @@ const LOADING_WORDS = [
 ];
 
 const OUTPUT_OPTIONS = [
-  { value: "learnings", label: "Learnings" },
-  { value: "qa", label: "Q&A" },
-  { value: "making-post", label: "Making Post" },
-  { value: "making-yt", label: "Making YT" },
+  { value: "learnings", label: "Learnings", hint: "Get clear takeaways from the uploaded file" },
+  { value: "qa", label: "Q&A", hint: "Get everything from the attached file in form of Q&A" },
+  // { value: "making-post", label: "Making Post", hint: "" },
+  // { value: "making-yt", label: "Making YT", hint: "" },
 ];
 
 export default function FileUpload() {
@@ -341,6 +341,12 @@ export default function FileUpload() {
           )}
         </button>
       </div>
+
+      {selectedOutput && OUTPUT_OPTIONS.find((o) => o.value === selectedOutput)?.hint && (
+        <p className="mt-2 text-center text-sm text-zinc-500 dark:text-zinc-400">
+          {OUTPUT_OPTIONS.find((o) => o.value === selectedOutput)?.hint}
+        </p>
+      )}
 
       {error && (
         <p className="mt-3 text-center text-sm text-red-500">{error}</p>

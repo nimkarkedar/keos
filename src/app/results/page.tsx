@@ -52,14 +52,22 @@ export default function ResultsPage() {
               priority
             />
           </Link>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(result);
-            }}
-            className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
-          >
-            Copy All
-          </button>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/about"
+              className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+            >
+              About
+            </Link>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(result);
+              }}
+              className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
+            >
+              Copy All
+            </button>
+          </div>
         </div>
       </nav>
 
