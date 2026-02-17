@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as pdfParse from "pdf-parse";
-const pdf = (pdfParse as unknown as { default: typeof pdfParse }).default || pdfParse;
+import { extractText } from "unpdf";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,10 +10,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const data = await pdf(buffer);
+    const buffer = new Uint8Array(await file.arrayBuffer());
+    const { text } = await extractText(buffer);
 
-    return NextResponse.json({ text: data.text });
+    return NextResponse.json({ text });
   } catch (error: unknown) {
     console.error("PDF parse error:", error);
     return NextResponse.json(
