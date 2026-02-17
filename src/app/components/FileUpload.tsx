@@ -88,23 +88,21 @@ export default function FileUpload() {
   }, [isLoading]);
 
   const extractPdfText = async (file: File): Promise<string> => {
-    const pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    const formData = new FormData();
+    formData.append("file", file);
 
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const pages: string[] = [];
+    const res = await fetch("/api/parse-pdf", {
+      method: "POST",
+      body: formData,
+    });
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: Record<string, unknown>) => (item as { str: string }).str)
-        .join(" ");
-      pages.push(pageText);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to parse PDF");
     }
 
-    return pages.join("\n\n");
+    return data.text;
   };
 
   const handleFile = useCallback(async (file: File) => {
