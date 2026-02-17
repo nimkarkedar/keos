@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import RefineChat from "../components/RefineChat";
+// import RefineChat from "../components/RefineChat";
 
 export default function ResultsPage() {
   const [guestName, setGuestName] = useState("");
@@ -124,12 +124,12 @@ export default function ResultsPage() {
         </div>
       </footer>
 
-      {/* Floating Refine Chat */}
-      <RefineChat
+      {/* Floating Refine Chat - hidden for now */}
+      {/* <RefineChat
         transcript={transcript}
         currentOutput={result}
         onOutputUpdate={(newOutput) => setResult(newOutput)}
-      />
+      /> */}
     </div>
   );
 }
