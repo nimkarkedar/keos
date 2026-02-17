@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import pdf from "pdf-parse";
+import * as pdfParse from "pdf-parse";
+const pdf = (pdfParse as unknown as { default: typeof pdfParse }).default || pdfParse;
 
 export async function POST(req: NextRequest) {
   try {
