@@ -13,9 +13,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Content Repurpose — Turn Podcasts into Multi-Format Content",
+  title: "KEOS - Repurpose Content",
   description:
-    "Upload your podcast transcript and instantly generate blogs, social posts, newsletters, and more.",
+    "Upload your podcast transcript and instantly repurpose it into learnings, Q&As, and more. Powered by Claude.",
+  keywords: ["KEOS", "repurpose content", "podcast transcript", "The Gyaan Project", "content generation", "Claude AI"],
+  openGraph: {
+    title: "KEOS - Repurpose Content",
+    description: "Upload your podcast transcript and instantly repurpose it into learnings, Q&As, and more.",
+    siteName: "KEOS",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "KEOS - Repurpose Content",
+    description: "Upload your podcast transcript and instantly repurpose it into learnings, Q&As, and more.",
+  },
 };
 
 export default function RootLayout({
