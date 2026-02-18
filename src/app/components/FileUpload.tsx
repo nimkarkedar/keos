@@ -176,22 +176,27 @@ export default function FileUpload() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          transcript: fileContent,
-          format: selectedOutput,
+      const [claudeRes, openaiRes] = await Promise.all([
+        fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript: fileContent, format: selectedOutput }),
         }),
-      });
+        fetch("/api/generate-openai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript: fileContent, format: selectedOutput }),
+        }),
+      ]);
 
-      const data = await res.json();
+      const claudeData = await claudeRes.json();
+      const openaiData = await openaiRes.json();
 
-      if (!res.ok) {
-        if (data.error?.includes("rate_limit")) {
+      if (!claudeRes.ok) {
+        if (claudeData.error?.includes("rate_limit")) {
           setError("The transcript is too large or you're sending too many requests. Please wait a moment and try again.");
         } else {
-          setError(data.error || "Something went wrong.");
+          setError(claudeData.error || "Something went wrong.");
         }
         return;
       }
@@ -199,8 +204,9 @@ export default function FileUpload() {
       sessionStorage.setItem(
         "generatedResult",
         JSON.stringify({
-          guestName: data.guestName,
-          result: data.result,
+          guestName: claudeData.guestName,
+          result: claudeData.result,
+          openaiResult: openaiRes.ok ? openaiData.result : null,
           format: selectedOutput,
           transcript: fileContent,
         })

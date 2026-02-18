@@ -9,8 +9,10 @@ import Link from "next/link";
 export default function ResultsPage() {
   const [guestName, setGuestName] = useState("");
   const [result, setResult] = useState("");
+  const [openaiResult, setOpenaiResult] = useState("");
   const [format, setFormat] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [activeTab, setActiveTab] = useState<"claude" | "chatgpt">("claude");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function ResultsPage() {
     const data = JSON.parse(stored);
     setGuestName(data.guestName || "Guest");
     setResult(data.result || "");
+    setOpenaiResult(data.openaiResult || "");
     setFormat(data.format || "");
     setTranscript(data.transcript || "");
   }, [router]);
@@ -61,7 +64,7 @@ export default function ResultsPage() {
             </Link>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(result);
+                navigator.clipboard.writeText(activeTab === "claude" ? result : openaiResult);
               }}
               className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
             >
@@ -85,12 +88,36 @@ export default function ResultsPage() {
 
       {/* Content */}
       <main className="mx-auto max-w-3xl px-6 pt-4 pb-20">
-        <h1 className="mb-10 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mb-8 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
           {title}
         </h1>
 
+        {/* Tabs */}
+        <div className="mb-8 flex gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-1 w-fit dark:border-zinc-700 dark:bg-zinc-800">
+          <button
+            onClick={() => setActiveTab("claude")}
+            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
+              activeTab === "claude"
+                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100"
+                : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+            }`}
+          >
+            Claude
+          </button>
+          <button
+            onClick={() => setActiveTab("chatgpt")}
+            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
+              activeTab === "chatgpt"
+                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100"
+                : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+            }`}
+          >
+            ChatGPT
+          </button>
+        </div>
+
         <article className="prose prose-zinc prose-lg max-w-none">
-          {result.split("\n").map((line, i) => {
+          {(activeTab === "claude" ? result : openaiResult).split("\n").map((line, i) => {
             const trimmed = line.trim();
             if (!trimmed) return <br key={i} />;
 

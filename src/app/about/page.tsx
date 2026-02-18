@@ -51,14 +51,13 @@ export default function AboutPage() {
           <p>
             Kedar is a self-taught designer with 18+ years of experience
             crafting digital experiences. He has previously led design teams at
-            Jupiter, BookMyShow, Cleartrip, and Webchutney, and currently serves
-            as Director of Design at PropertyGuru in Singapore.
+            Jupiter, BookMyShow, Cleartrip, and Webchutney, and PropertyGuru.
           </p>
 
           <p>
-            KEOS helps repurpose podcast transcripts into structured,
-            publishable content — learnings, Q&As, social posts, and more —
-            powered by Claude.
+            KEOS is an internal tool where Kedar repurpose podcast transcripts
+            into structured, publishable content — learnings, Q&As, social
+            posts, and more — powered by Claude and ChatGPT.
           </p>
 
           <p>
