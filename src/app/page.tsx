@@ -31,9 +31,9 @@ export default function Home() {
           Powered by Claude
         </div>
         <h1 className="mx-auto max-w-3xl text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-          Repurpose{" "}
+          Jo hukum{" "}
           <span className="animate-gradient bg-[length:300%_300%] bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #FF6900, #FF4400, #FF6900, #FF4400, #FF6900)" }}>
-            Podcast Transcript
+            mere aaka
           </span>
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
