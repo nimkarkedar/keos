@@ -55,21 +55,13 @@ export default function ResultsPage() {
               priority
             />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/about"
               className="text-sm font-medium text-white/80 transition-colors hover:text-white"
             >
               About
             </Link>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(activeTab === "claude" ? result : openaiResult);
-              }}
-              className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
-            >
-              Copy All
-            </button>
           </div>
         </div>
       </nav>
@@ -92,28 +84,47 @@ export default function ResultsPage() {
           {title}
         </h1>
 
-        {/* Tabs */}
-        <div className="mb-8 flex gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-1 w-fit dark:border-zinc-700 dark:bg-zinc-800">
-          <button
-            onClick={() => setActiveTab("claude")}
-            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
-              activeTab === "claude"
-                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100"
-                : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-            }`}
-          >
-            Claude
-          </button>
-          <button
-            onClick={() => setActiveTab("chatgpt")}
-            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
-              activeTab === "chatgpt"
-                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100"
-                : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-            }`}
-          >
-            ChatGPT
-          </button>
+        {/* Tabs + Copy buttons */}
+        <div className="mb-8 flex items-center justify-between">
+          <div className="flex gap-1 rounded-xl bg-zinc-900 p-1">
+            <button
+              onClick={() => setActiveTab("claude")}
+              className="rounded-lg px-5 py-2 text-sm font-medium transition-all"
+              style={
+                activeTab === "claude"
+                  ? { backgroundColor: "#FF6900", color: "#fff" }
+                  : { color: "#999" }
+              }
+            >
+              Claude
+            </button>
+            <button
+              onClick={() => setActiveTab("chatgpt")}
+              className="rounded-lg px-5 py-2 text-sm font-medium transition-all"
+              style={
+                activeTab === "chatgpt"
+                  ? { backgroundColor: "#FF6900", color: "#fff" }
+                  : { color: "#999" }
+              }
+            >
+              ChatGPT
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigator.clipboard.writeText(result)}
+              className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-400 hover:text-zinc-900"
+            >
+              Copy Claude
+            </button>
+            <button
+              onClick={() => navigator.clipboard.writeText(openaiResult)}
+              className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-400 hover:text-zinc-900"
+            >
+              Copy ChatGPT
+            </button>
+          </div>
         </div>
 
         <article className="prose prose-zinc prose-lg max-w-none">
