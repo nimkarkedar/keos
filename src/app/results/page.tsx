@@ -2,17 +2,153 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-// import RefineChat from "../components/RefineChat";
+import ReactMarkdown from "react-markdown";
+import Navbar from "../components/Navbar";
+
+function parseSections(markdown: string) {
+  const lines = markdown.split("\n");
+  const sections: { title: string; content: string }[] = [];
+  let currentTitle = "";
+  let currentContent: string[] = [];
+
+  // If the output uses ## headings, parse from ##. If only # headings exist, parse from #.
+  const hasMultiHash = lines.some(l => /^#{2,4}\s+/.test(l));
+  const headingRegex = hasMultiHash ? /^#{2,4}\s+(.+)/ : /^#{1,4}\s+(.+)/;
+
+  for (const line of lines) {
+    const headingMatch = line.match(headingRegex);
+    if (headingMatch) {
+      if (currentTitle || currentContent.join("").trim()) {
+        sections.push({ title: currentTitle, content: currentContent.join("\n").trim() });
+      }
+      currentTitle = headingMatch[1].trim();
+      currentContent = [];
+    } else {
+      currentContent.push(line);
+    }
+  }
+  if (currentTitle || currentContent.join("").trim()) {
+    sections.push({ title: currentTitle, content: currentContent.join("\n").trim() });
+  }
+
+  return sections;
+}
+
+function CopyIconButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={() => {
+        navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="shrink-0 text-[#cb5400] hover:text-[#a34300] transition-colors"
+      title="Copy"
+    >
+      {copied ? (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ) : (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+function CopyLabelButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={() => {
+        navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="rounded border border-zinc-300 px-3 py-1 text-sm text-zinc-500 hover:border-zinc-400 hover:text-zinc-800 transition-colors"
+    >
+      {copied ? "Copied!" : "Copy"}
+    </button>
+  );
+}
+
+function ModelSection({
+  content,
+  label,
+  defaultExpanded,
+}: {
+  content: string;
+  label: string;
+  defaultExpanded: boolean;
+}) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  const sections = parseSections(content);
+
+  return (
+    <div className="border-b border-zinc-200">
+      {/* Accordion header */}
+      <div className="flex items-center justify-between py-5">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-3 text-2xl font-bold text-zinc-900"
+        >
+          <span className="text-base">{expanded ? "▼" : "▶"}</span>
+          <span>{label}</span>
+        </button>
+        <CopyLabelButton text={content} />
+      </div>
+
+      {expanded && (
+        <div className="pl-8 pb-12">
+          {sections.map((section, i) => (
+            <div key={i}>
+              {i > 0 && <hr className="border-zinc-400 my-8" />}
+
+              {/* Section label + copy icon */}
+              {section.title && (
+                <div className="flex items-start justify-between gap-6 mb-4">
+                  <span className="text-[36px] font-bold leading-tight text-zinc-900">
+                    {section.title.charAt(0).toUpperCase() + section.title.slice(1).toLowerCase()}
+                  </span>
+                  <CopyIconButton text={section.content} />
+                </div>
+              )}
+
+              {/* Content — Major Third scale (×1.25): p=17 → h3=21 → h2=27 → h1=33 */}
+              <div className="
+                [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:text-zinc-800 [&_p]:mt-0 [&_p]:mb-[1.1em]
+                [&_h1]:text-[33px] [&_h1]:leading-[1.2] [&_h1]:font-bold [&_h1]:tracking-[-0.02em] [&_h1]:text-zinc-900 [&_h1]:mt-0 [&_h1]:mb-4
+                [&_h2]:text-[27px] [&_h2]:leading-[1.3] [&_h2]:font-bold [&_h2]:tracking-[-0.015em] [&_h2]:text-zinc-900 [&_h2]:mt-0 [&_h2]:mb-3
+                [&_h3]:text-[21px] [&_h3]:leading-[1.4] [&_h3]:font-semibold [&_h3]:text-zinc-900 [&_h3]:mt-0 [&_h3]:mb-3
+                [&_h4]:text-[17px] [&_h4]:leading-[1.6] [&_h4]:font-semibold [&_h4]:text-zinc-900 [&_h4]:mt-0 [&_h4]:mb-2
+                [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-4
+                [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4
+                [&_li]:text-[17px] [&_li]:leading-[1.75] [&_li]:text-zinc-800 [&_li]:mb-3
+                [&_strong]:font-semibold [&_strong]:text-zinc-900
+                [&_li_strong]:!font-normal [&_li_strong]:!text-zinc-800
+                [&_em]:italic [&_em]:text-zinc-600
+                [&_a]:text-[#cb5400] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:no-underline
+                [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-zinc-500 [&_blockquote]:my-5
+              ">
+                <ReactMarkdown>{section.content}</ReactMarkdown>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ResultsPage() {
-  const [guestName, setGuestName] = useState("");
   const [result, setResult] = useState("");
   const [openaiResult, setOpenaiResult] = useState("");
-  const [format, setFormat] = useState("");
-  const [transcript, setTranscript] = useState("");
-  const [activeTab, setActiveTab] = useState<"claude" | "chatgpt">("claude");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,152 +158,26 @@ export default function ResultsPage() {
       return;
     }
     const data = JSON.parse(stored);
-    setGuestName(data.guestName || "Guest");
     setResult(data.result || "");
     setOpenaiResult(data.openaiResult || "");
-    setFormat(data.format || "");
-    setTranscript(data.transcript || "");
   }, [router]);
-
-  const formatLabel: Record<string, string> = {
-    learnings: "Learnings",
-    qa: "Q&A",
-    "making-post": "Making Post",
-    "making-yt": "Making YT",
-  };
-
-  const title = `${formatLabel[format] || "Learnings"} from ${guestName}`;
 
   if (!result) return null;
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full" style={{ backgroundColor: "#222222", paddingTop: "10px", paddingBottom: "10px" }}>
-        <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
-          <Link href="/">
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={200}
-              height={83}
-              className="invert"
-              priority
-            />
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/about"
-              className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-            >
-              About
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Sticky Back to Home */}
-      <div className="sticky top-[calc(4rem+20px)] z-40 bg-white/90 backdrop-blur-sm">
-        <div className="mx-auto max-w-3xl px-6 py-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
-          >
-            &larr; Back to Home
-          </Link>
-        </div>
-      </div>
-
-      {/* Content */}
-      <main className="mx-auto max-w-3xl px-6 pt-4 pb-20">
-        <h1 className="mb-8 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-          {title}
-        </h1>
-
-        {/* Tabs + Copy buttons */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex gap-1 rounded-xl bg-zinc-900 p-1">
-            <button
-              onClick={() => setActiveTab("claude")}
-              className="rounded-lg px-5 py-2 text-sm font-medium transition-all"
-              style={
-                activeTab === "claude"
-                  ? { backgroundColor: "#FF6900", color: "#fff" }
-                  : { color: "#999" }
-              }
-            >
-              Claude
-            </button>
-            <button
-              onClick={() => setActiveTab("chatgpt")}
-              className="rounded-lg px-5 py-2 text-sm font-medium transition-all"
-              style={
-                activeTab === "chatgpt"
-                  ? { backgroundColor: "#FF6900", color: "#fff" }
-                  : { color: "#999" }
-              }
-            >
-              ChatGPT
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigator.clipboard.writeText(result)}
-              className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-400 hover:text-zinc-900"
-            >
-              Copy Claude
-            </button>
-            <button
-              onClick={() => navigator.clipboard.writeText(openaiResult)}
-              className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-400 hover:text-zinc-900"
-            >
-              Copy ChatGPT
-            </button>
-          </div>
-        </div>
-
-        <article className="prose prose-zinc prose-lg max-w-none">
-          {(activeTab === "claude" ? result : openaiResult).split("\n").map((line, i) => {
-            const trimmed = line.trim();
-            if (!trimmed) return <br key={i} />;
-
-            // Match numbered lines like "1." or "1)"
-            const match = trimmed.match(/^(\d+)[.)]\s*(.*)/);
-            if (match) {
-              return (
-                <p key={i} className="my-4">
-                  <span className="mr-2 font-semibold text-zinc-400">
-                    {match[1]}.
-                  </span>
-                  {match[2]}
-                </p>
-              );
-            }
-
-            return (
-              <p key={i} className="my-4">
-                {trimmed}
-              </p>
-            );
-          })}
-        </article>
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <main className="mx-auto max-w-3xl px-6 pt-[96px] pb-20">
+        <ModelSection content={result} label="Claude" defaultExpanded={false} />
+        {openaiResult && (
+          <ModelSection content={openaiResult} label="ChatGPT" defaultExpanded={false} />
+        )}
       </main>
-
-      {/* Footer */}
       <footer className="border-t border-zinc-200 py-6">
-        <div className="mx-auto max-w-3xl px-6 text-center text-sm text-zinc-500">
-          &copy; {new Date().getFullYear()} The Gyaan Project. All rights
-          reserved.
+        <div className="mx-auto max-w-3xl px-6 text-center text-sm text-zinc-400">
+          &copy; {new Date().getFullYear()} The Gyaan Project. All rights reserved.
         </div>
       </footer>
-
-      {/* Floating Refine Chat - hidden for now */}
-      {/* <RefineChat
-        transcript={transcript}
-        currentOutput={result}
-        onOutputUpdate={(newOutput) => setResult(newOutput)}
-      /> */}
     </div>
   );
 }

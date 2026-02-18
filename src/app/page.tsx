@@ -1,29 +1,10 @@
-import Image from "next/image";
-import Link from "next/link";
+import Navbar from "./components/Navbar";
 import FileUpload from "./components/FileUpload";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full" style={{ backgroundColor: "#222222", paddingTop: "10px", paddingBottom: "10px" }}>
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-10">
-          <Image
-            src="/logo.svg"
-            alt="Logo"
-            width={200}
-            height={83}
-            className="invert"
-            priority
-          />
-          <Link
-            href="/about"
-            className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-          >
-            About
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="flex flex-1 flex-col items-center justify-center px-6 pt-24 pb-20 text-center">

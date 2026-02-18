@@ -1,30 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full" style={{ backgroundColor: "#222222", paddingTop: "10px", paddingBottom: "10px" }}>
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-10">
-          <Link href="/">
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={200}
-              height={83}
-              className="invert"
-              priority
-            />
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-          >
-            About
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Content */}
       <main className="mx-auto max-w-3xl flex-1 px-6 pt-32 pb-20">
