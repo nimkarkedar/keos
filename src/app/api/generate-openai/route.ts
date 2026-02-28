@@ -10,6 +10,7 @@ const client = new OpenAI({
 const FORMAT_TO_FILE: Record<string, string> = {
   learnings: "Learnings.md",
   qa: "Q&A.md",
+  "making-episode": "making_episode.md",
   "making-post": "Making-post.md",
   "making-yt": "makingYT.md",
 };

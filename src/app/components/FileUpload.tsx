@@ -61,6 +61,7 @@ const LOADING_WORDS = [
 const OUTPUT_OPTIONS = [
   { value: "learnings", label: "Learnings", hint: "Get clear takeaways from the uploaded file" },
   { value: "qa", label: "Q&A", hint: "Get everything from the attached file in form of Q&A" },
+  { value: "making-episode", label: "Make episode (YT + Web)", hint: "Generate titles, timestamps, hashtags, show notes and more for YouTube and web" },
   // { value: "making-post", label: "Making Post", hint: "" },
   // { value: "making-yt", label: "Making YT", hint: "" },
 ];

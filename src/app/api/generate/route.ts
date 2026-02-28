@@ -3,13 +3,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "fs/promises";
 import path from "path";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 const FORMAT_TO_FILE: Record<string, string> = {
   learnings: "Learnings.md",
   qa: "Q&A.md",
+  "making-episode": "making_episode.md",
   "making-post": "Making-post.md",
   "making-yt": "makingYT.md",
 };
@@ -50,6 +47,7 @@ export async function POST(req: NextRequest) {
 
 ${contextContent ? `Here is important context about the podcast, host, audience, and style:\n\n${contextContent}` : ""}`;
 
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await client.messages.create({
       model: "claude-sonnet-4-5-20250929",
       max_tokens: 4096,
